@@ -28,16 +28,19 @@ function getTrending(page = 1) {
   );
 }
 getTrending()
-  .then((data) =>
-    list.insertAdjacentHTML("beforeend", createMarkup(data.results))
-  )
+  .then((data) => {
+    list.insertAdjacentHTML("beforeend", createMarkup(data.results));
+    if (data.page !== data.total_pages) {
+      loadMore.hidden = false;
+    }
+  })
   .catch((err) => console.log(err));
 
 function createMarkup(arr) {
   return arr
     .map(
       ({ poster_path, title }) => `<li class="movie-card">
-        <img src="https://image.tmdb.org/t/p/w500${poster_path}" alt="${title}">
+        <img src="https://image.tmdb.org/t/p/w400${poster_path}" alt="${title}">
         <h2>${title}</h2>
       </li>`
     )
