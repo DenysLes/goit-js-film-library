@@ -1,3 +1,16 @@
+const target = document.querySelector(".js-guard");
+let options = {
+  root: null,
+  rootMargin: "200px",
+  threshold: 1.0,
+};
+
+let observer = new IntersectionObserver(cancelIdleCallback, options);
+
+function callback(evt) {
+  console.log(evt);
+}
+
 const BASE_URL = "https://api.themoviedb.org/3/";
 const ENDPOINT = "trending/movie/day";
 const API_KEY = "345007f9ab440e5b86cef51be6397df1";
@@ -10,9 +23,13 @@ loadMore.addEventListener("click", onLoad);
 function onLoad() {
   currentPage += 1;
   getTrending(currentPage)
-    .then((data) =>
-      list.insertAdjacentHTML("beforeend", createMarkup(data.results))
-    )
+    .then((data) => {
+      list.insertAdjacentHTML("beforeend", createMarkup(data.results));
+
+      if (data.page === data.total_pages) {
+        loadMore.hidden = true;
+      }
+    })
     .catch((err) => console.log(err));
 }
 
@@ -30,6 +47,7 @@ function getTrending(page = 1) {
 getTrending()
   .then((data) => {
     list.insertAdjacentHTML("beforeend", createMarkup(data.results));
+    observer.observe(target);
     if (data.page !== data.total_pages) {
       loadMore.hidden = false;
     }
@@ -45,4 +63,13 @@ function createMarkup(arr) {
       </li>`
     )
     .join("");
+}
+
+// infinity scroll
+let counter = 0;
+document.addEventListener("scroll", onScroll);
+
+function onScroll() {
+  counter += 1;
+  console.log(counter);
 }
