@@ -5,7 +5,7 @@ let options = {
   threshold: 1.0,
 };
 
-let observer = new IntersectionObserver(cancelIdleCallback, options);
+let observer = new IntersectionObserver(callback, options);
 
 function callback(evt) {
   console.log(evt);
